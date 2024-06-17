@@ -1,0 +1,7 @@
+name: pdf-watermark-iac
+runtime: nodejs
+description: IaC for PDF watermark webservice
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: ""
