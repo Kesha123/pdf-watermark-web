@@ -1,9 +1,7 @@
-# import uuid
 import asyncio
-from typing import Optional, Union
+from typing import Optional
 from dataclasses import dataclass, asdict
-from pdf_watermark import WaterMarkInsert, WaterMarkGrid
-from aws_sqs import WaterMarkType, SQSMessage
+from aws_sqs import SQSMessage
 
 
 @dataclass
@@ -34,27 +32,16 @@ class WaterMarkGrid:
     image_scale: Optional[float]
 
 
-async def apply_watermark(
-        # type: WaterMarkType,
-        # parameters: Union[WaterMarkInsert, WaterMarkGrid],
-        # input_file: str,
-        # watermark_data: str,
-        sqs_message: SQSMessage
-    ):
-
-    # outputfile_postfix = str(uuid.uuid4())
-    # outputfile = f'{input_file.split('.')[0]}_{outputfile_postfix}.pdf'
-
+async def apply_watermark(sqs_message: SQSMessage):
     parameters_dict = asdict(sqs_message.parameters)
-
     default_parameters = [
-            'watermark',
-            sqs_message.type.value,
-            sqs_message.input_file,
-            sqs_message.watermark_data,
-            '-s',
-            sqs_message.outputfile
-        ]
+        'watermark',
+        sqs_message.type.value,
+        sqs_message.input_file,
+        sqs_message.watermark_data,
+        '-s',
+        f'/tmp/{sqs_message.outputfile}'
+    ]
     parameters_list = []
     for flag, parameter in parameters_dict.items():
         if parameter is not None:

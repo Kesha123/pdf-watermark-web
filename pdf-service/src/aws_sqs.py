@@ -1,11 +1,11 @@
 from enum import Enum
-from typing import Union, Optional
+from typing import Union
 from dataclasses import dataclass
 import botocore.client
-import error
 from pdf_watermark import WaterMarkInsert, WaterMarkGrid
 from aws_sqs import SQSMessage, WaterMarkType
 from pdf_watermark import apply_watermark
+import error
 
 
 class WaterMarkType(Enum):
@@ -22,7 +22,12 @@ class SQSMessage:
     output_file: str
 
 
-async def process_sqs_message(sqs: botocore.client.BaseClient, queue_url: str) -> None:
+async def process_sqs_message(
+        sqs: botocore.client.BaseClient,
+        s3: botocore.client.BaseClient,
+        queue_url: str,
+        bucket: str
+    ) -> None:
     while True:
         response = sqs.receive_message(
             QueueUrl=queue_url,
@@ -34,15 +39,16 @@ async def process_sqs_message(sqs: botocore.client.BaseClient, queue_url: str) -
             for message in response['Messages']:
                 message_data = SQSMessage(**message['Body'])
 
-                match message_data.type:
-                    case WaterMarkType.INSERT:
-                        parameters = WaterMarkInsert(**message_data.parammeters)
-                    case WaterMarkType.GRID:
-                        parameters = WaterMarkGrid(**message_data.parammeters)
-                    case _:
-                        raise error.InvalidWatermarkTypeError()
+                if not message_data.type in WaterMarkType:
+                    raise error.InvalidWatermarkTypeError()
 
-                output_file = await apply_watermark(message_data.type, parameters)
+                await apply_watermark(message_data)
+
+                s3.upload_file(
+                    f'/tmp/{message_data.output_file}',
+                    bucket,
+                    'output/{message_data.output_file}'
+                )
 
                 sqs.delete_message(
                     QueueUrl=queue_url,
