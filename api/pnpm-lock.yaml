@@ -26,6 +26,12 @@ dependencies:
   '@nestjs/swagger':
     specifier: ^7.4.0
     version: 7.4.0(@nestjs/common@10.3.10)(@nestjs/core@10.3.10)(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)
+  '@types/aws-lambda':
+    specifier: ^8.10.141
+    version: 8.10.141
+  '@vendia/serverless-express':
+    specifier: ^4.12.6
+    version: 4.12.6
   aws-sdk:
     specifier: ^2.1658.0
     version: 2.1658.0
@@ -1150,6 +1156,11 @@ packages:
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
+
+  /@codegenie/serverless-express@4.14.1:
+    resolution: {integrity: sha512-B90/1OmA9mf9bEJnplLj7FGf+N2v2ikB68c/9W9uXmCa4ep/V00ymCiivwGLyeuzQRW33tcj4+KxZ2utfmu39Q==}
+    engines: {node: '>=12'}
+    dev: false
 
   /@colors/colors@1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -2296,6 +2307,10 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@types/aws-lambda@8.10.141:
+    resolution: {integrity: sha512-SMWlRBukG9KV8ZNjwemp2AzDibp/czIAeKKTw09nCPbWxVskIxactCJCGOp4y6I1hCMY7T7UGfySvBLXNeUbEw==}
+    dev: false
+
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
     dependencies:
@@ -2614,6 +2629,13 @@ packages:
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
+
+  /@vendia/serverless-express@4.12.6:
+    resolution: {integrity: sha512-ePsIPk3VQwgm5nh/JGBtTKQs5ZOF7REjHxC+PKk/CHvhlKQkJuUU365uPOlxuLJhC+BAefDznDRReWxpnKjmYg==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@codegenie/serverless-express': 4.14.1
+    dev: false
 
   /@webassemblyjs/ast@1.12.1:
     resolution: {integrity: sha512-EKfMUOPRRUTy5UII4qJDGPpqfwjOmZ5jeGFwid9mnoqIFK+e0vqoi1qH56JpmZSzEL53jKnNzScdmftJyG5xWg==}
