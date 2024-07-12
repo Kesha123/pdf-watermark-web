@@ -32,7 +32,7 @@ export class FileService {
    * @returns A url to upload a file to the S3 bucket
    */
   async getUploadUrl(fileKey: string): Promise<string> {
-    if (!fileKey.endsWith('.pdf') || !fileKey.endsWith('.jpg') || !fileKey.endsWith('.png')) {
+    if (!fileKey.endsWith('.pdf') && !fileKey.endsWith('.jpg') && !fileKey.endsWith('.png')) {
       throw new FileTypeNotSupported();
     }
 
