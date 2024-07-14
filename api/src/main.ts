@@ -24,10 +24,7 @@ async function bootstrap() {
       type: 'http',
       scheme: 'mutual',
     })
-    .addServer(
-      'http://localhost:8000',
-      'Localhost - Host to use for local development',
-    )
+    .addServer('http://localhost:8000', 'Localhost - Host to use for local development')
     .addServer(
       'https://api.pdf-watermark.innokentii.eu',
       'Production - Host to use with production environment',

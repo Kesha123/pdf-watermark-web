@@ -13,6 +13,11 @@
           "dtoFileNameSuffix": [".dto.ts"]
         }
       }
+    ],
+    "assets": [
+      "pdf-watermark/assets/jwks.json",
+      { "include": "pdf-watermark/assets/*", "exclude": "pdf-watermark/assets/jwks.json", "outDir": "dist/assets" },
+      { "include": "pdf-watermark/assets/jwks.json", "outDir": "dist/assets" }
     ]
   }
 }

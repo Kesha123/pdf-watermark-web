@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty } from "class-validator";
-import { Transform } from "class-transformer";
+import { IsString, IsNotEmpty } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export default class UploadFileSignedUrlDto {
   @IsString()

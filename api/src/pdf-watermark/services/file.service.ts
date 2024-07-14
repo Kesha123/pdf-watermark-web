@@ -12,9 +12,7 @@ export class FileService {
   private awsS3BucketName: string;
   private awsS3Region: string;
 
-  constructor(
-    private readonly configService: ConfigService,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     try {
       this.awsS3BucketName = this.configService.getOrThrow<string>('AWS_S3_BUCKET_NAME');
       this.awsS3Region = this.configService.getOrThrow<string>('AWS_REGION');
@@ -48,7 +46,7 @@ export class FileService {
       Bucket: this.awsS3BucketName,
       Key: s3FileKey,
     });
-    const url = await getSignedUrl(this.awsS3Client,uploadObjectParams);
+    const url = await getSignedUrl(this.awsS3Client, uploadObjectParams);
     return url;
   }
 }

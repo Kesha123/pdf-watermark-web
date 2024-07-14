@@ -1,10 +1,9 @@
 import { Transform } from 'class-transformer';
-import { IsEnum, isNotEmpty, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { IsPdfFile } from '../utils/pdf.transformer';
 import WaterMarkCreateType from '../models/watermark-create-type.enum';
 
 export default class WatermarkCreateDto {
-
   @IsNumber()
   @IsOptional()
   y: number;
