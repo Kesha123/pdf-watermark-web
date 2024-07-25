@@ -1,1 +1,3 @@
 *.env
+pdf-service/venv/
+**/__pycache__/

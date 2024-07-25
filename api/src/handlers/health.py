@@ -7,7 +7,7 @@ from handlers.base import BaseHandler
 from middleware.authentication import Authentication
 
 
-@Authentication("jwt")
+@Authentication('jwt')
 class Health(BaseHandler):
 
     def get(self) -> None:
