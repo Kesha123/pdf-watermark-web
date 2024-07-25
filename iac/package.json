@@ -1,7 +1,12 @@
 {
     "name": "pdf-watermark-iac",
     "main": "index.ts",
+    "scripts": {
+        "lint": "eslint \"src/**/*.ts\"",
+        "lint:fix": "eslint \"src/**/*.ts\" --fix"
+    },
     "devDependencies": {
+        "@eslint/js": "^8.56.0",
         "@types/node": "^18",
         "typescript": "^5.0.0"
     },
