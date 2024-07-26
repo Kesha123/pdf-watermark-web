@@ -5,6 +5,7 @@ import jwt
 from config.environment import environment
 from tornado.web import HTTPError
 from errors.jwt_public_key_not_found import JWTPublicKeyNotFound
+from errors.invalid_authentication_method import InvalidAuthenticationMethodError
 
 
 class JWTProvider(Enum):
@@ -15,7 +16,7 @@ class JWTProvider(Enum):
 class Authentication(object):
     def __init__(self, method) -> None:
         if method != "jwt":
-            raise Exception("Invalid authentication method")
+            raise InvalidAuthenticationMethodError()
         self.authentication_method = method
         self.jwks = self.__download_jwks(JWTProvider.COGNITO)
 
@@ -37,7 +38,7 @@ class Authentication(object):
                 except jwt.ExpiredSignatureError:
                     raise HTTPError(401, reason="Token has expired")
                 except jwt.InvalidTokenError as e:
-                    raise HTTPError(401)
+                    raise HTTPError(401, reason="Invalid token")
                 return handler_execute(handler, kwargs)
 
             return require_auth

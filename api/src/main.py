@@ -3,15 +3,20 @@ from tornado_swagger.setup import setup_swagger
 from config.logger import logger
 from handlers.health import Health
 from handlers.get_upload_url import GetUploadUrl
+from handlers.watermark_text import WatermarkText
+from handlers.watermark_image import WatermarkImage
+from handlers.image_generate import ImageGenerate
 from config.environment import environment
 
 
 class Application(tornado.web.Application):
     _routes = [
         tornado.web.url(r"/api/health_", Health, name="health"),
-        # tornado.web.url(r'/api/watermark/text', Health, name='health'),
-        # tornado.web.url(r'/api/watermark/image', Health, name='health'),
-        # tornado.web.url(r'/api/image-generate', Health, name='health'),
+        tornado.web.url(r"/api/watermark/text", WatermarkText, name="watermark-text"),
+        tornado.web.url(
+            r"/api/watermark/image", WatermarkImage, name="watermark-image"
+        ),
+        tornado.web.url(r"/api/image-generate", ImageGenerate, name="image-generate"),
         tornado.web.url(
             r"/api/file/get-upload-url", GetUploadUrl, name="get-upload-url"
         ),
