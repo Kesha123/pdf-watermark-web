@@ -12,7 +12,9 @@ class Application(tornado.web.Application):
         # tornado.web.url(r'/api/watermark/text', Health, name='health'),
         # tornado.web.url(r'/api/watermark/image', Health, name='health'),
         # tornado.web.url(r'/api/image-generate', Health, name='health'),
-        tornado.web.url(r"/api/file/get-upload-url", GetUploadUrl, name="health"),
+        tornado.web.url(
+            r"/api/file/get-upload-url", GetUploadUrl, name="get-upload-url"
+        ),
     ]
 
     def log_request(self, handler: tornado.web.RequestHandler) -> None:
