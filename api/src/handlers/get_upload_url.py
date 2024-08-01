@@ -1,21 +1,12 @@
-from dataclasses import dataclass
 from handlers.base import BaseHandler
 from middleware.authentication import Authentication
 from utils.request_body_validator import request_body_validator
-from services.file_service import FileService
-
-
-@dataclass
-class GetUploadUrlRequest:
-    fileKey: str
+from models.get_upload_url_request import GetUploadUrlRequest
+from errors.generate_upload_url_error import GenerateUploadUrlError
 
 
 @Authentication("jwt")
 class GetUploadUrl(BaseHandler):
-
-    def initialize(self) -> None:
-        super().initialize()
-        self.file_service = FileService()
 
     @request_body_validator(GetUploadUrlRequest)
     async def post(self) -> None:
@@ -24,4 +15,4 @@ class GetUploadUrl(BaseHandler):
         if response:
             self.success(response)
         else:
-            self.error("Failed to get upload url")
+            raise GenerateUploadUrlError()

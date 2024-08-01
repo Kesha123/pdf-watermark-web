@@ -13,6 +13,7 @@ class Environment:
     COGNITO_AUDIENCE: str
     S3_BUCKET_NAME: str
     S3_BUCKET_REGION: str
+    WATERMARK_LAMBDA_FUNCTION_NAME: str
 
 
 def get_environment() -> Environment:
@@ -25,6 +26,7 @@ def get_environment() -> Environment:
             COGNITO_AUDIENCE=os.getenv("COGNITO_AUDIENCE"),
             S3_BUCKET_NAME=os.getenv("S3_BUCKET_NAME"),
             S3_BUCKET_REGION=os.getenv("S3_BUCKET_REGION"),
+            WATERMARK_LAMBDA_FUNCTION_NAME=os.getenv("WATERMARK_LAMBDA_FUNCTION_NAME"),
         )
     except Exception as e:
         logger.error(e)

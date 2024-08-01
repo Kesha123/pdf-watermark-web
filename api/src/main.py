@@ -28,7 +28,7 @@ class Application(tornado.web.Application):
     def __init__(self, **kwargs):
         setup_swagger(
             self._routes,
-            swagger_url="/api/doc",
+            swagger_url="/api/docs",
             api_base_url="/api",
             description="",
             api_version="1.0.0",
