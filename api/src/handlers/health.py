@@ -1,7 +1,7 @@
 import json
-from tornado_swagger.model import register_swagger_model
 from handlers.base import BaseHandler
 from middleware.authentication import Authentication
+from swagger.get_health_model import GetHealthModel
 
 
 @Authentication("jwt")
@@ -21,20 +21,8 @@ class Health(BaseHandler):
             200:
                 description: Ok
                 schema:
-                  $ref: '#/definitions/GetHealth'
+                  $ref: '#/definitions/GetHealthModel'
             400:
                 description: Bad request
         """
         self.write(json.dumps({"status": "ok"}))
-
-
-@register_swagger_model
-class GetHealth:
-    """
-    ---
-    type: object
-    properties:
-        status:
-            type: string
-            example: "ok"
-    """

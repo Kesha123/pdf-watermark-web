@@ -3,7 +3,7 @@ from middleware.authentication import Authentication
 from utils.request_body_validator import request_body_validator
 from models.get_upload_url_request import GetUploadUrlRequest
 from errors.generate_upload_url_error import GenerateUploadUrlError
-from tornado_swagger.model import register_swagger_model
+from swagger.get_uploadurl_request_model import GetUploadUrlRequestModel
 
 
 @Authentication("jwt")
@@ -28,7 +28,7 @@ class GetUploadUrl(BaseHandler):
           name: body
           required: true
           schema:
-            $ref: '#/definitions/GetUploadUrlRequest'
+            $ref: '#/definitions/GetUploadUrlRequestModel'
         responses:
             200:
                 description: Successfully generated presigned URL
@@ -49,17 +49,3 @@ class GetUploadUrl(BaseHandler):
         else:
             self.status(400)
             raise GenerateUploadUrlError()
-
-
-@register_swagger_model
-class GetUploadUrlRequest:
-    """
-    ---
-    type: object
-    required:
-    - fileKey
-    properties:
-        fileKey:
-            type: string
-            description: Unique key identifying the file for which to generate the upload URL
-    """
