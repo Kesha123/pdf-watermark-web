@@ -10,6 +10,7 @@ from models.watermark_type import WatermarkType
 from models.watermark_data_type import WatermarkDataType
 import boto3
 import os
+from dacite import Config, from_dict
 
 
 BUCKET_NAME = os.environ["BUCKET_NAME"]
@@ -36,7 +37,11 @@ class DEFAULTS:
 def lambda_handler(event, context):
     s3 = boto3.client("s3")
 
-    payload = WatermarkCreateRequest(**event)
+    payload = from_dict(
+        data_class=WatermarkCreateRequest,
+        data=event,
+        config=Config(cast=[WatermarkType, WatermarkDataType]),
+    )
 
     input_file_key = payload.input_file_key
     output_file_key = payload.output_file_key
@@ -61,6 +66,8 @@ def lambda_handler(event, context):
             watermark_payload = f"/tmp/{watermark_payload.split('/')[-1]}"
         case WatermarkDataType.TEXT:
             watermark_payload = payload.watermark_text
+        case _:
+            watermark_payload = "empty payload"
 
     drawing_options = DrawingOptions(
         watermark=watermark_payload,
@@ -69,7 +76,11 @@ def lambda_handler(event, context):
         text_color=payload.parameters.text_color or DEFAULTS.text_color,
         text_font=payload.parameters.text_font or DEFAULTS.text_font,
         text_size=payload.parameters.text_size or DEFAULTS.text_size,
-        unselectable=payload.parameters.unselectable or DEFAULTS.unselectable,
+        unselectable=(
+            payload.parameters.unselectable
+            if hasattr(payload.parameters, "unselectable")
+            else DEFAULTS.unselectable
+        ),
         image_scale=payload.parameters.image_scale or DEFAULTS.image_scale,
         dpi=payload.parameters.dpi or DEFAULTS.dpi,
         save_as_image=DEFAULTS.save_as_image,
