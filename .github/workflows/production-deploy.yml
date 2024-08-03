@@ -62,6 +62,15 @@ jobs:
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
+  call-lambda-build-deploy:
+    name: Lambda - Build, Deploy
+    needs: environment-deploy
+    uses: ./.github/workflows/lambda-build-deploy.yaml
+    secrets: inherit
+    with:
+      AWS_DIST_LAMBDA_BUCKET_NAME: ${{ fromJson(needs.environment-deploy.outputs.resources).resources.lambda.bucketName }}
+      AWS_DIST_LAMBDA_NAME: ${{ fromJson(needs.environment-deploy.outputs.resources).resources.lambda.functionName }}
+
   call-frontend-build-deploy:
     name: Call Frontend Build and Deploy
     needs: environment-deploy

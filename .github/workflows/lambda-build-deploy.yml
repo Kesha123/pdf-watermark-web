@@ -1,0 +1,108 @@
+name: Lambda - Build, Deploy
+
+on:
+  workflow_call:
+    inputs:
+      AWS_DIST_LAMBDA_BUCKET_NAME:
+        required: true
+        type: string
+      AWS_DIST_LAMBDA_NAME:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: pdf
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Build Lambda Layer
+        run: |
+          python3.11 -m venv create_layer
+          source create_layer/bin/activate
+          pip install -r requirements.txt
+          mkdir python
+          cp -r create_layer/lib python/
+          zip -r layer_content.zip python
+
+      - name: Build Lambda Function
+        run: |
+          zip -r lambda_function.zip lambda_function.py pdf_watermark models
+
+      - name: Upload Lambda Layer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-lambda-layer-artifact
+          path: pdf/layer_content.zip
+          if-no-files-found: error
+
+      - name: Upload Lambda Function Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-lambda-function-artifact
+          path: pdf/lambda_function.zip
+          if-no-files-found: error
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download Lambda Layer Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-lambda-layer-artifact
+          path: pdf/
+
+      - name: Download Lambda Function Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-lambda-function-artifact
+          path: pdf/
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Copy Artifacts to AWS S3
+        run: |-
+          cd api/
+          aws s3 sync ./ s3://${{ inputs.AWS_DIST_LAMBDA_BUCKET_NAME }}
+          cd ..
+
+      - name: Deploy Dependencies for AWS Lambda
+        id: deploy-dependency
+        run: |-
+          echo "DEPENDENCY_LAYER=$(aws lambda publish-layer-version \
+            --layer-name pdf-watermark-lambda-layer \
+            --content S3Bucket=${{ inputs.AWS_DIST_LAMBDA_BUCKET_NAME }},S3Key=layer_content.zip \
+            --compatible-runtimes python3.10 \
+            --compatible-architectures x86_64 \
+            --query \"LayerVersionArn\")" >> $GITHUB_OUTPUT
+
+      - name: Deploy Lambda Function to AWS Lambda
+        run: |-
+          aws lambda update-function-code --function-name ${{ inputs.AWS_DIST_LAMBDA_NAME }} \
+          --s3-bucket ${{ inputs.AWS_DIST_LAMBDA_BUCKET_NAME }} \
+          --s3-key lambda_function.zip \
+          --no-publish
+
+      - name: Update AWS Lambda to Use Updated Dependencies
+        run: |-
+          aws lambda update-function-configuration \
+            --function-name ${{ inputs.AWS_DIST_LAMBDA_NAME }} \
+            --handler lambda_function.lambda_handler \
+            --layers ${{ steps.deploy-dependency.outputs.DEPENDENCY_LAYER }}
