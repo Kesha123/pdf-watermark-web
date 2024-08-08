@@ -1,17 +1,19 @@
 version: '3.8'
 
 services:
-  pocketbase:
-    image: elestio/pocketbase:v0.22.18
-    restart: always
-    user: 0:0
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
     ports:
-      - 8090:8090
-    volumes:
-      - ./data:/pb_data
-    environment:
-      EMAIL: ${POCKETBASE_EMAIL}
-      ADMIN_PASSWORD: ${POCKETBASE_ADMIN_PASSWORD}
+      - "3000:3000"
+    depends_on:
+      - api
 
 volumes:
   data:

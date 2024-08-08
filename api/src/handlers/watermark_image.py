@@ -37,18 +37,15 @@ class WatermarkImage(BaseHandler):
                 schema:
                     type: object
                     properties:
-                        output_file_key:
+                        download_url:
                             type: string
-                            description: The key of the output file with the applied watermark
+                            description: The download url of the output file with the applied watermark
             400:
                 description: Invalid watermark data type
         """
-        data: WatermarkCreateRequest = self.request.data
+        data: WatermarkCreateRequest = self.data
         if data.watermark_data_type != WatermarkDataType.IMAGE.value:
             self.set_status(400)
             raise InvalidWatermarkDatatype()
-        response = await self.watermark_service.watermark_text_async(data)
-        if response:
-            self.write(response)
-        else:
-            raise WatermarkGenerateError()
+        download_url = await self.watermark_service.watermark_async(data)
+        self.write({"download_url": download_url})
