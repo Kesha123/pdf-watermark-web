@@ -28,7 +28,6 @@ class Authentication(object):
                 try:
                     header = jwt.get_unverified_header(token)
                     public_key = self.__get_public_key(header["kid"])
-                    print(public_key)
                     jwt.decode(
                         token,
                         public_key,

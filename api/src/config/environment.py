@@ -14,6 +14,9 @@ class Environment:
     S3_BUCKET_NAME: str
     S3_BUCKET_REGION: str
     WATERMARK_LAMBDA_FUNCTION_NAME: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_REGION: str
 
 
 def get_environment() -> Environment:
@@ -27,6 +30,9 @@ def get_environment() -> Environment:
             S3_BUCKET_NAME=os.getenv("S3_BUCKET_NAME"),
             S3_BUCKET_REGION=os.getenv("S3_BUCKET_REGION"),
             WATERMARK_LAMBDA_FUNCTION_NAME=os.getenv("WATERMARK_LAMBDA_FUNCTION_NAME"),
+            AWS_ACCESS_KEY_ID=os.getenv("AWS_ACCESS_KEY_ID"),
+            AWS_SECRET_ACCESS_KEY=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            AWS_REGION=os.getenv("AWS_REGION"),
         )
     except Exception as e:
         logger.error(e)

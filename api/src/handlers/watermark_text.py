@@ -1,5 +1,4 @@
 from errors.invalid_watermark_data_type import InvalidWatermarkDatatype
-from errors.watermark_generate_error import WatermarkGenerateError
 from handlers.base import BaseHandler
 from middleware.authentication import Authentication
 from models.watermark_create_request import WatermarkCreateRequest
@@ -43,15 +42,12 @@ class WatermarkText(BaseHandler):
             400:
                 description: Invalid watermark data type
         """
-        data: WatermarkCreateRequest = self.request.data
-        if data.watermark_data_type != WatermarkDataType.TEXT:
+        data: WatermarkCreateRequest = self.data
+        if data.watermark_data_type != WatermarkDataType.TEXT.value:
             self.set_status(400)
             raise InvalidWatermarkDatatype()
-        response = await self.watermark_service.watermark_text_async(data)
-        if response:
-            self.success(response)
-        else:
-            raise WatermarkGenerateError()
+        download_url = await self.watermark_service.watermark_async(data)
+        self.write({"download_url": download_url})
 
 
 @register_swagger_model

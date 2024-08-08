@@ -10,7 +10,7 @@ from models.watermark_type import WatermarkType
 @dataclass
 class WatermarkCreateRequest:
     watermark_type: WatermarkType
-    parammeters: Union[WatermarkInsert, WatermarkGrid]
+    parameters: Union[WatermarkInsert, WatermarkGrid]
     input_file_key: str
     watermark_data_type: WatermarkDataType
     watermark_text: Optional[str]

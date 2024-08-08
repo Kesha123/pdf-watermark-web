@@ -44,11 +44,11 @@ class WatermarkImage(BaseHandler):
                 description: Invalid watermark data type
         """
         data: WatermarkCreateRequest = self.request.data
-        if data.watermark_data_type != WatermarkDataType.IMAGE:
+        if data.watermark_data_type != WatermarkDataType.IMAGE.value:
             self.set_status(400)
             raise InvalidWatermarkDatatype()
         response = await self.watermark_service.watermark_text_async(data)
         if response:
-            self.success(response)
+            self.write(response)
         else:
             raise WatermarkGenerateError()

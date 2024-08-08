@@ -1,4 +1,5 @@
 import json
+from errors.watermark_generate_error import WatermarkGenerateError
 from botocore.exceptions import ClientError
 from botocore.client import BaseClient
 from config.environment import environment
@@ -8,6 +9,7 @@ from config.async_executor import executor
 from models.watermark_create_request import WatermarkCreateRequest
 from utils.singleton import singleton
 from dataclasses import asdict
+from botocore.response import StreamingBody
 
 
 @singleton
@@ -23,13 +25,24 @@ class WatermarkService:
         try:
             payload = json.dumps(asdict(data))
             response = self.__lambda_client.invoke(
-                FunctionName=self.function_name,
+                FunctionName=self.__function_name,
                 InvocationType="RequestResponse",
                 Payload=payload.encode("utf-8"),
             )
         except ClientError as e:
             logger.error(e)
         return response
+
+    def __create_file_download_url(self, key: str) -> str:
+        url = self.__s3_client.generate_presigned_url(
+            "get_object",
+            Params={
+                "Bucket": self.__s3_bucket_name,
+                "Key": key,
+            },
+            ExpiresIn=3600,
+        )
+        return url
 
     async def watermark_async(self, data: WatermarkCreateRequest) -> str:
         """
@@ -43,4 +56,8 @@ class WatermarkService:
             self.__watermark,
             data,
         )
-        return response
+        if response:
+            download_url = self.__create_file_download_url(data.output_file_key)
+            return download_url
+        else:
+            raise WatermarkGenerateError()
