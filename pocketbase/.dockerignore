@@ -1,0 +1,5 @@
+pb_data/
+.dockerignore
+Dockerfile
+pocketbase
+.gitignore
