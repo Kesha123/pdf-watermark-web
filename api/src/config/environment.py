@@ -2,6 +2,7 @@ import os
 from config.logger import logger
 from errors.environment_not_set import EnvironmentNotSetError
 from dataclasses import dataclass
+from models.authentication_provider_enum import AuthenticationProvider
 
 
 @dataclass
@@ -17,6 +18,8 @@ class Environment:
     AWS_ACCESS_KEY_ID: str
     AWS_SECRET_ACCESS_KEY: str
     AWS_REGION: str
+    POCKETBASE: str
+    AUTHENTICATION_PROVIDER: AuthenticationProvider
 
 
 def get_environment() -> Environment:
@@ -33,6 +36,10 @@ def get_environment() -> Environment:
             AWS_ACCESS_KEY_ID=os.getenv("AWS_ACCESS_KEY_ID"),
             AWS_SECRET_ACCESS_KEY=os.getenv("AWS_SECRET_ACCESS_KEY"),
             AWS_REGION=os.getenv("AWS_REGION"),
+            POCKETBASE=os.getenv("POCKETBASE"),
+            AUTHENTICATION_PROVIDER=AuthenticationProvider(
+                os.getenv("AUTHENTICATION_PROVIDER")
+            ),
         )
     except Exception as e:
         logger.error(e)
